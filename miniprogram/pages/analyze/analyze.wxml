@@ -1,0 +1,268 @@
+<view class="container">
+  <!-- 标签切换 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === 'analyze' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="analyze">
+      <text class="tab-icon">🔍</text>
+      <text class="tab-text">爆款拆解</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'history' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="history">
+      <text class="tab-icon">📜</text>
+      <text class="tab-text">分析历史</text>
+    </view>
+  </view>
+
+  <!-- 拆解模式 -->
+  <view class="analyze-mode" wx-if="{{activeTab === 'analyze'}}">
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view class="section-header">
+        <text class="section-title">🔗 输入小红书笔记链接</text>
+      </view>
+      
+      <view class="url-input-wrapper">
+        <input 
+          class="url-input"
+          type="text"
+          placeholder="粘贴小红书笔记链接..."
+          bindinput="onInputUrl"
+          value="{{inputUrl}}"
+        />
+        <view class="paste-btn" bindtap="useExample" data-example="https://www.xiaohongshu.com/explore/xxx">
+          <text>📋 粘贴</text>
+        </view>
+      </view>
+
+      <!-- 示例 -->
+      <view class="examples">
+        <text class="examples-title">试试这些：</text>
+        <view class="examples-list">
+          <view 
+            class="example-item"
+            bindtap="useExample"
+            data-example="https://www.xiaohongshu.com/explore/abc123">
+            <text>📕 穿搭分享</text>
+          </view>
+          <view 
+            class="example-item"
+            bindtap="useExample"
+            data-example="https://www.xiaohongshu.com/explore/def456">
+            <text>📗 美妆教程</text>
+          </view>
+          <view 
+            class="example-item"
+            bindtap="useExample"
+            data-example="https://www.xiaohongshu.com/explore/ghi789">
+            <text>📘 探店打卡</text>
+          </view>
+        </view>
+      </view>
+
+      <button 
+        class="analyze-btn {{isAnalyzing ? 'loading' : ''}}"
+        bindtap="analyze"
+        disabled="{{isAnalyzing || !inputUrl}}">
+        <view wx:if="{{!isAnalyzing}}">
+          <text class="btn-icon">🔍</text>
+          <text class="btn-text">开始分析</text>
+        </view>
+        <view wx:else class="btn-loading">
+          <view class="loading-spinner"></view>
+          <text class="loading-text">AI分析中...</text>
+        </view>
+      </button>
+    </view>
+
+    <!-- 分析结果 -->
+    <view class="result-section" wx:if="{{analyzeResult}}">
+      <!-- 综合评分 -->
+      <view class="overall-card">
+        <view class="score-circle">
+          <text class="score-num">{{analyzeResult.overallScore}}</text>
+          <text class="score-label">综合评分</text>
+        </view>
+        <view class="score-info">
+          <text class="level-tag {{analyzeResult.level}}">{{analyzeResult.level}}级爆款</text>
+          <text class="summary-text">{{analyzeResult.summary}}</text>
+        </view>
+      </view>
+
+      <!-- 各项分析 -->
+      <view class="analysis-list">
+        <!-- 标题分析 -->
+        <view class="analysis-card">
+          <view class="card-header">
+            <text class="card-title">🎯 标题分析</text>
+            <view class="score-badge">{{analyzeResult.titleAnalysis.score}}分</view>
+          </view>
+          <view class="card-content">
+            <view class="analysis-item">
+              <text class="item-label">标题结构</text>
+              <text class="item-value">{{analyzeResult.titleAnalysis.structure}}</text>
+            </view>
+            <view class="analysis-item">
+              <text class="item-label">标题长度</text>
+              <text class="item-value">{{analyzeResult.titleAnalysis.length}}字</text>
+            </view>
+            <view class="analysis-item">
+              <text class="item-label">Emoji数量</text>
+              <text class="item-value">{{analyzeResult.titleAnalysis.emojiCount}}个</text>
+            </view>
+          </view>
+          <view class="suggestions">
+            <text class="suggestions-title">💡 优化建议</text>
+            <view class="suggestion-item" wx:for="{{analyzeResult.titleAnalysis.suggestions}}" wx:key="index">
+              <text>{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 内容分析 -->
+        <view class="analysis-card">
+          <view class="card-header">
+            <text class="card-title">📝 内容分析</text>
+            <view class="score-badge">{{analyzeResult.contentAnalysis.score}}分</view>
+          </view>
+          <view class="card-content">
+            <view class="analysis-item">
+              <text class="item-label">字数</text>
+              <text class="item-value">{{analyzeResult.contentAnalysis.wordCount}}字</text>
+            </view>
+            <view class="analysis-item">
+              <text class="item-label">段落数</text>
+              <text class="item-value">{{analyzeResult.contentAnalysis.paragraphCount}}段</text>
+            </view>
+            <view class="analysis-item">
+              <text class="item-label">Emoji数</text>
+              <text class="item-value">{{analyzeResult.contentAnalysis.emojiCount}}个</text>
+            </view>
+          </view>
+          <view class="content-structure">
+            <view class="structure-item" wx:for="{{analyzeResult.contentAnalysis.structure}}" wx:key="name">
+              <text class="structure-name">{{item.name}}</text>
+              <text class="structure-desc">{{item.desc}}</text>
+              <view class="structure-score">
+                <view class="score-bar" style="width: {{item.score}}%"></view>
+              </view>
+            </view>
+          </view>
+          <view class="suggestions">
+            <text class="suggestions-title">💡 优化建议</text>
+            <view class="suggestion-item" wx:for="{{analyzeResult.contentAnalysis.suggestions}}" wx:key="index">
+              <text>{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 话题分析 -->
+        <view class="analysis-card">
+          <view class="card-header">
+            <text class="card-title">🏷️ 话题分析</text>
+            <view class="score-badge">{{analyzeResult.topicAnalysis.score}}分</view>
+          </view>
+          <view class="topics-list">
+            <text class="topic-item" wx:for="{{analyzeResult.topicAnalysis.topics}}" wx:key="index">{{item}}</text>
+          </view>
+          <view class="hot-topics">
+            <text class="hot-label">🔥 热门话题：</text>
+            <text class="hot-item" wx:for="{{analyzeResult.topicAnalysis.hotTopics}}" wx:key="index">{{item}}</text>
+          </view>
+          <view class="suggestions">
+            <text class="suggestions-title">💡 优化建议</text>
+            <view class="suggestion-item" wx:for="{{analyzeResult.topicAnalysis.suggestions}}" wx:key="index">
+              <text>{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 封面分析 -->
+        <view class="analysis-card">
+          <view class="card-header">
+            <text class="card-title">🖼️ 封面分析</text>
+            <view class="score-badge">{{analyzeResult.coverAnalysis.score}}分</view>
+          </view>
+          <view class="card-content">
+            <view class="analysis-item">
+              <text class="item-label">封面类型</text>
+              <text class="item-value">{{analyzeResult.coverAnalysis.type}}</text>
+            </view>
+            <view class="analysis-item">
+              <text class="item-label">配色方案</text>
+              <text class="item-value">{{analyzeResult.coverAnalysis.colorScheme}}</text>
+            </view>
+            <view class="analysis-item">
+              <text class="item-label">文字位置</text>
+              <text class="item-value">{{analyzeResult.coverAnalysis.textPosition}}</text>
+            </view>
+          </view>
+          <view class="suggestions">
+            <text class="suggestions-title">💡 优化建议</text>
+            <view class="suggestion-item" wx:for="{{analyzeResult.coverAnalysis.suggestions}}" wx:key="index">
+              <text>{{item}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 改进建议 -->
+      <view class="improvement-card">
+        <text class="improvement-title">📌 提升建议</text>
+        <view class="improvement-list">
+          <view class="improvement-item" wx:for="{{analyzeResult.improvementPoints}}" wx:key="index">
+            <text class="improvement-num">{{index + 1}}</text>
+            <text class="improvement-text">{{item}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="action-buttons">
+        <button class="action-btn primary" bindtap="copyResult">
+          <text>📋 复制分析报告</text>
+        </button>
+        <button class="action-btn secondary" bindtap="analyze">
+          <text>🔄 重新分析</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史模式 -->
+  <view class="history-mode" wx-if="{{activeTab === 'history'}}">
+    <view class="history-header">
+      <text class="history-count">共 {{historyList.length}} 条记录</text>
+      <text class="clear-btn" bindtap="clearHistory" wx:if="{{historyList.length > 0}}">清空</text>
+    </view>
+
+    <view class="history-list" wx:if="{{historyList.length > 0}}">
+      <view class="history-item" wx:for="{{historyList}}" wx:key="id">
+        <view class="history-info">
+          <view class="history-score {{item.score >= 90 ? 'high' : item.score >= 80 ? 'mid' : 'low'}}">
+            <text>{{item.score}}</text>
+          </view>
+          <view class="history-detail">
+            <text class="history-url">{{item.url}}</text>
+            <text class="history-time">{{item.time}}</text>
+          </view>
+        </view>
+        <view class="history-actions">
+          <text class="action-text" bindtap="viewHistory" data-id="{{item.id}}">查看</text>
+          <text class="action-text delete" bindtap="deleteHistory" data-id="{{item.id}}">删除</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{historyList.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无分析记录</text>
+      <text class="empty-hint">分析过的笔记会显示在这里</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

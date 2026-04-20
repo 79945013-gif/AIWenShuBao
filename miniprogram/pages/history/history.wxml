@@ -1,0 +1,79 @@
+<view class="container">
+  <!-- 筛选标签 -->
+  <view class="filter-tabs">
+    <view 
+      class="filter-item {{filterType === item.value ? 'active' : ''}}"
+      wx:for="{{filterTypes}}"
+      wx:key="value"
+      bindtap="setFilter"
+      data-type="{{item.value}}">
+      <text>{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 历史列表 -->
+  <view class="history-list" wx:if="{{historyList.length > 0}}">
+    <view class="history-item" wx:for="{{historyList}}" wx:key="id">
+      <view class="item-header">
+        <view class="item-type {{item.type}}">
+          <text>{{getTypeName(item.type)}}</text>
+        </view>
+        <text class="item-time">{{formatTime(item.createTime)}}</text>
+      </view>
+      
+      <view class="item-content" bindtap="viewDetail" data-id="{{item.id}}">
+        <view class="item-input">
+          <text class="input-label">主题：</text>
+          <text class="input-text">{{item.input}}</text>
+        </view>
+        
+        <view class="item-preview" wx:if="{{item.result && item.result.copywriting}}">
+          <view class="preview-title">
+            <text class="title-icon">📌</text>
+            <text class="title-text">{{item.result.copywriting.titles[0]}}</text>
+          </view>
+          <view class="preview-tags">
+            <text wx:for="{{item.result.copywriting.tags.slice(0, 3)}}" wx:key="index" class="tag">{{item}}</text>
+          </view>
+        </view>
+        
+        <view class="item-cover" wx:if="{{item.result && item.result.cover}}">
+          <view class="cover-placeholder">
+            <text>🖼️ 封面已生成</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="item-actions">
+        <view class="action-btn" bindtap="copyItem" data-id="{{item.id}}">
+          <text>📋 复制</text>
+        </view>
+        <view class="action-btn" bindtap="viewDetail" data-id="{{item.id}}">
+          <text>👁️ 查看</text>
+        </view>
+        <view class="action-btn delete" bindtap="deleteItem" data-id="{{item.id}}">
+          <text>🗑️ 删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{historyList.length === 0}}">
+    <view class="empty-icon">📭</view>
+    <text class="empty-title">暂无历史记录</text>
+    <text class="empty-desc">开始生成内容吧，生成记录会显示在这里</text>
+    <button class="empty-btn" bindtap="goToGenerate">
+      <text>🚀 立即开始</text>
+    </button>
+  </view>
+
+  <!-- 清空按钮 -->
+  <view class="clear-section" wx:if="{{historyList.length > 0}}">
+    <view class="clear-btn" bindtap="clearAll">
+      <text>🗑️ 清空全部历史</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

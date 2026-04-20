@@ -1,0 +1,236 @@
+<view class="container">
+  <!-- 类型选择 -->
+  <view class="type-tabs">
+    <view 
+      class="tab-item {{currentTab === 'copywriting' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="copywriting">
+      <text class="tab-icon">📝</text>
+      <text class="tab-text">AI文案</text>
+    </view>
+    <view 
+      class="tab-item {{currentTab === 'cover' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="cover">
+      <text class="tab-icon">🖼️</text>
+      <text class="tab-text">AI封面</text>
+    </view>
+    <view 
+      class="tab-item {{currentTab === 'both' ? 'active' : ''}}" 
+      bindtap="switchTab" 
+      data-tab="both">
+      <text class="tab-icon">✨</text>
+      <text class="tab-text">全套</text>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="section-title-row">
+      <text class="section-title">
+        {{currentTab === 'cover' ? '🖼️ 封面主题' : currentTab === 'both' ? '📝 内容主题' : '📝 输入内容主题'}}
+      </text>
+      <text class="hint">越详细越好</text>
+    </view>
+    
+    <textarea 
+      class="input-area {{currentTab === 'cover' ? 'cover-mode' : ''}}"
+      placeholder="{{currentTab === 'cover' ? '例如：春日穿搭、高级感、显瘦、适合小个子...' : '例如：分享一套春天的穿搭心得，好看又实用...'}}"
+      bindinput="onInput"
+      value="{{inputText}}"
+      maxlength="{{currentTab === 'cover' ? 200 : 500}}"
+    ></textarea>
+    
+    <view class="input-footer">
+      <text class="char-count">{{inputText.length}}/{{currentTab === 'cover' ? 200 : 500}}</text>
+    </view>
+    
+    <!-- 示例 -->
+    <view class="examples" wx:if="{{!inputText && currentTab === 'copywriting'}}">
+      <text class="examples-title">试试这些：</text>
+      <view class="examples-list">
+        <view 
+          class="example-item" 
+          wx:for="{{examples}}" 
+          wx:key="index"
+          bindtap="useExample"
+          data-text="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 风格选择 -->
+  <view class="style-section" wx:if="{{currentTab !== 'cover'}}">
+    <view class="section-title-row">
+      <text class="section-title">🎨 选择风格</text>
+    </view>
+    <scroll-view class="style-scroll" scroll-x="true">
+      <view class="style-list">
+        <view 
+          class="style-item {{selectedStyle === item.name ? 'active' : ''}}"
+          wx:for="{{styleOptions}}"
+          wx:key="name"
+          bindtap="selectStyle" 
+          data-style="{{item.value}}"
+          data-name="{{item.name}}">
+          <text class="style-icon">{{item.icon}}</text>
+          <text class="style-name">{{item.name}}</text>
+          <text class="style-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 封面风格 -->
+  <view class="style-section" wx:if="{{currentTab === 'cover' || currentTab === 'both'}}">
+    <view class="section-title-row">
+      <text class="section-title">🎨 封面风格</text>
+    </view>
+    <view class="cover-style-grid">
+      <view 
+        class="cover-style-item {{selectedCoverStyle === item.name ? 'active' : ''}}"
+        wx:for="{{coverStyles}}"
+        wx:key="name"
+        bindtap="selectCoverStyle" 
+        data-style="{{item.value}}"
+        data-name="{{item.name}}">
+        <view class="cover-preview {{item.value}}">
+          <text class="preview-icon">✨</text>
+        </view>
+        <text class="cover-style-name">{{item.name}}</text>
+        <text class="cover-style-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 生成按钮 -->
+  <view class="action-section">
+    <button 
+      class="generate-btn {{isGenerating ? 'loading' : ''}}"
+      bindtap="generate"
+      disabled="{{isGenerating || !inputText}}">
+      <view class="btn-content" wx:if="{{!isGenerating}}">
+        <text class="btn-icon">✨</text>
+        <text class="btn-text">AI一键生成</text>
+      </view>
+      <view class="btn-loading" wx:else>
+        <view class="loading-spinner"></view>
+        <text class="loading-text">AI正在创作中...</text>
+      </view>
+    </button>
+    
+    <view class="free-tip" wx:if="{{remainingCount !== '无限' && remainingCount > 0}}">
+      <text>今日剩余 <text class="highlight">{{remainingCount}}</text> 次免费机会</text>
+    </view>
+    <view class="vip-tip" wx:if="{{remainingCount === '无限'}}">
+      <text class="vip-badge">✨ Pro会员 · 无限使用</text>
+    </view>
+    <view class="vip-tip" wx:if="{{remainingCount !== '无限' && remainingCount <= 0}}">
+      <text>今日次数已用完，开通Pro获得无限使用</text>
+    </view>
+  </view>
+
+  <!-- 生成结果 -->
+  <view class="result-section" wx:if="{{result}}">
+    <!-- 合规检测结果 -->
+    <view class="compliance-card" wx:if="{{complianceResult && currentTab !== 'cover'}}">
+      <view class="compliance-header">
+        <text class="compliance-title">🔍 合规检测</text>
+        <view class="compliance-badge {{complianceResult.riskLevel}}">
+          <text wx:if="{{complianceResult.passed}}">✅ 通过</text>
+          <text wx:elif="{{complianceResult.riskLevel === 'medium'}}">⚠️ 注意</text>
+          <text wx:else>❌ 风险</text>
+        </view>
+      </view>
+      <view class="compliance-content" wx:if="{{!complianceResult.passed}}">
+        <text class="compliance-desc">发现以下可能违规的词汇：</text>
+        <view class="sensitive-words">
+          <text class="sensitive-word" wx:for="{{complianceResult.foundWords}}" wx:key="index">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 文案结果 -->
+    <view class="result-content" wx:if="{{result.copywriting}}">
+      <view class="result-header">
+        <text class="result-title">📝 生成结果</text>
+        <view class="result-actions">
+          <view class="action-btn" bindtap="copyResult">
+            <text>📋 复制全部</text>
+          </view>
+          <view class="action-btn" bindtap="regenerate">
+            <text>🔄 重新生成</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 爆款标题 -->
+      <view class="result-block">
+        <view class="block-header">
+          <text class="block-label">📌 爆款标题</text>
+          <view class="block-action" bindtap="copyTitle">
+            <text>📋 复制</text>
+          </view>
+        </view>
+        <view class="titles-list">
+          <view class="title-item primary" wx:for="{{result.copywriting.titles}}" wx:key="index">
+            <text selectable>{{index + 1}}. {{item}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 正文内容 -->
+      <view class="result-block">
+        <view class="block-header">
+          <text class="block-label">📝 正文内容</text>
+          <view class="block-action" bindtap="copyContent">
+            <text>📋 复制</text>
+          </view>
+        </view>
+        <view class="block-content">
+          <text class="content-text" selectable>{{result.copywriting.content}}</text>
+        </view>
+      </view>
+
+      <!-- 推荐话题 -->
+      <view class="result-block">
+        <view class="block-header">
+          <text class="block-label">🏷️ 推荐话题</text>
+          <view class="block-action" bindtap="copyTags">
+            <text>📋 复制</text>
+          </view>
+        </view>
+        <view class="tags-content">
+          <text class="tag" wx:for="{{result.copywriting.tags}}" wx:key="index">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 封面结果 -->
+    <view class="cover-result" wx:if="{{result.cover}}">
+      <view class="result-header">
+        <text class="result-title">🖼️ 封面图</text>
+        <view class="result-actions">
+          <view class="action-btn" bindtap="saveCover">
+            <text>💾 保存图片</text>
+          </view>
+        </view>
+      </view>
+      <view class="cover-wrapper">
+        <view class="cover-demo {{selectedCoverStyle}}">
+          <text class="cover-demo-icon">✨</text>
+          <text class="cover-demo-text">{{inputText}}</text>
+          <text class="cover-demo-brand">AI文书宝</text>
+        </view>
+      </view>
+      <view class="cover-tip">
+        <text>长按封面可保存到相册</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部间距 -->
+  <view class="bottom-space"></view>
+</view>

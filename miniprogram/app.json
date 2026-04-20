@@ -1,0 +1,70 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/generate/generate",
+    "pages/analyze/analyze",
+    "pages/history/history",
+    "pages/settings/settings",
+    "pages/result/result"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FF6B6B",
+    "navigationBarTitleText": "AI文书宝",
+    "navigationBarTextStyle": "white",
+    "enablePullDownRefresh": true
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF6B6B",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "assets/images/home.png",
+        "selectedIconPath": "assets/images/home-active.png"
+      },
+      {
+        "pagePath": "pages/generate/generate",
+        "text": "生成",
+        "iconPath": "assets/images/generate.png",
+        "selectedIconPath": "assets/images/generate-active.png"
+      },
+      {
+        "pagePath": "pages/analyze/analyze",
+        "text": "拆解",
+        "iconPath": "assets/images/analyze.png",
+        "selectedIconPath": "assets/images/analyze-active.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "历史",
+        "iconPath": "assets/images/history.png",
+        "selectedIconPath": "assets/images/history-active.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "我的",
+        "iconPath": "assets/images/settings.png",
+        "selectedIconPath": "assets/images/settings-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.writePhotosAlbum": {
+      "desc": "保存封面图片到相册"
+    }
+  },
+  "requiredBackgroundModes": ["audio"],
+  "plugins": {
+    "tencentvideo": {
+      "version": "1.3.5",
+      "provider": "wxa75efa648b60994b"
+    }
+  }
+}

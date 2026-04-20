@@ -1,0 +1,23 @@
+{
+  "name": "AIWenShuBao",
+  "version": "1.0.0",
+  "description": "AI文书宝 - 小红书爆款文案一键生成小程序",
+  "main": "index.js",
+  "scripts": {
+    "dev": "miniprogram dev",
+    "build": "miniprogram build",
+    "upload": "miniprogram upload"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "xiaohongshu",
+    "ai",
+    "copywriting"
+  ],
+  "author": "AIWenShuBao",
+  "license": "MIT",
+  "dependencies": {
+    "wx-server-sdk": "^2.6.3"
+  }
+}

@@ -1,0 +1,84 @@
+<view class="container">
+  <view class="result-section" wx:if="{{result}}">
+    <!-- 头部信息 -->
+    <view class="header">
+      <view class="header-info">
+        <text class="result-type {{type}}">{{type === 'copywriting' ? '📝 文案' : type === 'cover' ? '🖼️ 封面' : '✨ 全套'}}</text>
+        <text class="result-style">{{style}}</text>
+      </view>
+      <text class="result-input">主题：{{input}}</text>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-bar">
+      <button class="action-btn primary" bindtap="copyAll">
+        <text>📋 复制全部</text>
+      </button>
+      <button class="action-btn secondary" bindtap="goToGenerate">
+        <text>🚀 继续生成</text>
+      </button>
+    </view>
+
+    <!-- 文案结果 -->
+    <view class="result-content" wx:if="{{result.copywriting}}">
+      <!-- 爆款标题 -->
+      <view class="result-block">
+        <view class="block-header">
+          <text class="block-label">📌 爆款标题</text>
+          <view class="block-action" bindtap="copyTitle">
+            <text>📋 复制</text>
+          </view>
+        </view>
+        <view class="titles-list">
+          <view class="title-item {{index === 0 ? 'primary' : ''}}" wx:for="{{result.copywriting.titles}}" wx:key="index">
+            <text selectable>{{index + 1}}. {{item}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 正文内容 -->
+      <view class="result-block">
+        <view class="block-header">
+          <text class="block-label">📝 正文内容</text>
+          <view class="block-action" bindtap="copyContent">
+            <text>📋 复制</text>
+          </view>
+        </view>
+        <view class="block-content">
+          <text class="content-text" selectable>{{result.copywriting.content}}</text>
+        </view>
+      </view>
+
+      <!-- 推荐话题 -->
+      <view class="result-block">
+        <view class="block-header">
+          <text class="block-label">🏷️ 推荐话题</text>
+          <view class="block-action" bindtap="copyTags">
+            <text>📋 复制</text>
+          </view>
+        </view>
+        <view class="tags-content">
+          <text class="tag" wx:for="{{result.copywriting.tags}}" wx:key="index">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 封面结果 -->
+    <view class="cover-result" wx:if="{{result.cover}}">
+      <view class="block-header">
+        <text class="block-label">🖼️ 封面图</text>
+      </view>
+      <view class="cover-wrapper">
+        <image class="cover-image" src="{{result.cover}}" mode="widthFix" show-menu-by-longpress="{{true}}"></image>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{!result}}">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">记录不存在</text>
+    <button class="empty-btn" bindtap="goToGenerate">
+      <text>🚀 去生成</text>
+    </button>
+  </view>
+</view>

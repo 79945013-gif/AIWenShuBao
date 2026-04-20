@@ -1,0 +1,286 @@
+/* pages/settings/settings.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 用户信息区域 */
+.user-section {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+  padding: 40rpx 30rpx;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.user-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.avatar-icon {
+  font-size: 50rpx;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10rpx;
+}
+
+.user-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #fff;
+}
+
+.user-badge.vip {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #333;
+}
+
+.vip-btn-area {
+  margin-left: auto;
+}
+
+.vip-btn {
+  background: #fff;
+  color: #FF6B6B;
+  border: none;
+  padding: 16rpx 30rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  font-weight: bold;
+}
+
+.vip-btn::after {
+  border: none;
+}
+
+.vip-expire {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 统计数据 */
+.stats-row {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-num {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.stat-label {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 6rpx;
+}
+
+.stat-divider {
+  width: 1rpx;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 会员卡片 */
+.vip-card {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+  margin: 30rpx;
+  padding: 30rpx;
+  border-radius: 20rpx;
+}
+
+.vip-content {
+  flex: 1;
+}
+
+.vip-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.vip-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.vip-tag {
+  background: #FF6B6B;
+  padding: 4rpx 12rpx;
+  border-radius: 10rpx;
+  font-size: 20rpx;
+  color: #fff;
+  margin-left: 12rpx;
+}
+
+.vip-desc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 16rpx;
+}
+
+.vip-price {
+  display: flex;
+  align-items: baseline;
+}
+
+.price-current {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #FF6B6B;
+  margin-right: 12rpx;
+}
+
+.price-original {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: line-through;
+}
+
+.vip-arrow {
+  font-size: 48rpx;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 菜单区域 */
+.menu-section {
+  margin: 20rpx 0;
+}
+
+.menu-title {
+  padding: 20rpx 30rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.menu-list {
+  background: #fff;
+  margin: 0 20rpx;
+  border-radius: 16rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-icon {
+  font-size: 32rpx;
+  margin-right: 20rpx;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.menu-text.danger {
+  color: #F44336;
+}
+
+.menu-arrow {
+  font-size: 28rpx;
+  color: #ccc;
+  margin-left: 16rpx;
+}
+
+.menu-version {
+  font-size: 24rpx;
+  color: #999;
+  margin-right: 8rpx;
+}
+
+/* 分享 */
+.share-section {
+  padding: 40rpx 30rpx;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50rpx;
+  padding: 24rpx;
+  border: none;
+}
+
+.share-btn::after {
+  border: none;
+}
+
+.share-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.share-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+/* 底部 */
+.footer {
+  text-align: center;
+  padding: 40rpx 20rpx;
+}
+
+.footer-text {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.footer-desc {
+  display: block;
+  font-size: 22rpx;
+  color: #ccc;
+}
+
+.bottom-space {
+  height: 120rpx;
+}

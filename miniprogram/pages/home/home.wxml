@@ -1,0 +1,151 @@
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="header-top">
+      <view class="logo-area">
+        <view class="logo-wrapper">
+          <text class="logo-icon">✍️</text>
+        </view>
+        <view class="title-area">
+          <text class="app-name">AI文书宝</text>
+          <text class="slogan">小红书爆款文案 · 一键生成</text>
+        </view>
+      </view>
+      <view class="vip-btn" bindtap="goToVip">
+        <text class="vip-text" wx:if="{{!isVip}}">开通Pro</text>
+        <text class="vip-text active" wx:else>✨ Pro</text>
+      </view>
+    </view>
+    
+    <view class="user-stats">
+      <view class="stat-item">
+        <text class="stat-num">{{dailyCount}}</text>
+        <text class="stat-label">今日剩余</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">{{totalCount}}</text>
+        <text class="stat-label">累计使用</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">{{freeLimit}}</text>
+        <text class="stat-label">每日限额</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷功能区 -->
+  <view class="quick-section">
+    <view class="section-header">
+      <text class="section-title">🎯 快捷功能</text>
+    </view>
+    <view class="quick-grid">
+      <view class="quick-card primary" bindtap="goToGenerate" data-type="copywriting">
+        <view class="quick-icon">📝</view>
+        <view class="quick-info">
+          <text class="quick-name">AI文案</text>
+          <text class="quick-desc">爆款标题+正文</text>
+        </view>
+      </view>
+      <view class="quick-card secondary" bindtap="goToGenerate" data-type="cover">
+        <view class="quick-icon">🖼️</view>
+        <view class="quick-info">
+          <text class="quick-name">AI封面</text>
+          <text class="quick-desc">一键精美封面</text>
+        </view>
+      </view>
+      <view class="quick-card accent" bindtap="goToGenerate" data-type="both">
+        <view class="quick-icon">✨</view>
+        <view class="quick-info">
+          <text class="quick-name">全套生成</text>
+          <text class="quick-desc">文+封面一键</text>
+        </view>
+      </view>
+      <view class="quick-card warning" bindtap="goToAnalyze">
+        <view class="quick-icon">🔍</view>
+        <view class="quick-info">
+          <text class="quick-name">爆款拆解</text>
+          <text class="quick-desc">分析爆款结构</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门话题 -->
+  <view class="topics-section">
+    <view class="section-header">
+      <text class="section-title">🔥 热门话题</text>
+      <text class="section-more">更多 »</text>
+    </view>
+    <scroll-view class="topics-scroll" scroll-x="true">
+      <view class="topics-list">
+        <view class="topic-item" wx:for="{{hotTopics}}" wx:key="index" bindtap="goToGenerate" data-type="copywriting">
+          <text class="topic-name">{{item.name}}</text>
+          <text class="topic-count">{{item.count}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 内容模板 -->
+  <view class="template-section">
+    <view class="section-header">
+      <text class="section-title">📋 内容模板</text>
+      <text class="section-more">换一批 »</text>
+    </view>
+    <view class="template-grid">
+      <view 
+        class="template-item" 
+        wx:for="{{templates}}" 
+        wx:key="id"
+        style="background: {{item.color}}20; border-left: 6rpx solid {{item.color}}"
+        bindtap="useTemplate" 
+        data-style="{{item.name}}"
+        data-name="{{item.name}}">
+        <text class="template-icon">{{item.icon}}</text>
+        <text class="template-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 爆款技巧 -->
+  <view class="tips-section">
+    <view class="section-header">
+      <text class="section-title">💡 爆款技巧</text>
+    </view>
+    <view class="tips-list">
+      <view class="tip-item">
+        <text class="tip-num">1</text>
+        <view class="tip-content">
+          <text class="tip-title">标题要有悬念</text>
+          <text class="tip-desc">用疑问或数字吸引点击，如"3个技巧让你..."</text>
+        </view>
+      </view>
+      <view class="tip-item">
+        <text class="tip-num">2</text>
+        <view class="tip-content">
+          <text class="tip-title">开头要有钩子</text>
+          <text class="tip-desc">用故事或痛点开头，让用户想继续看</text>
+        </view>
+      </view>
+      <view class="tip-item">
+        <text class="tip-num">3</text>
+        <view class="tip-content">
+          <text class="tip-title">配图要精美</text>
+          <text class="tip-desc">封面图决定点击率，标题决定分享率</text>
+        </view>
+      </view>
+      <view class="tip-item">
+        <text class="tip-num">4</text>
+        <view class="tip-content">
+          <text class="tip-title">话题要精准</text>
+          <text class="tip-desc">选择垂直领域话题，获得更多曝光</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部间距 -->
+  <view class="bottom-space"></view>
+</view>

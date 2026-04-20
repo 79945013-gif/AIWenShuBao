@@ -1,0 +1,167 @@
+<view class="container">
+  <!-- 用户信息区域 -->
+  <view class="user-section">
+    <view class="user-card">
+      <view class="user-avatar">
+        <text class="avatar-icon">👤</text>
+      </view>
+      <view class="user-info">
+        <text class="user-name">AI文书宝用户</text>
+        <view class="user-badge" wx:if="{{!isVip}}" bindtap="goToVip">
+          <text>开通Pro解锁更多</text>
+        </view>
+        <view class="user-badge vip" wx:else>
+          <text>✨ Pro会员</text>
+        </view>
+      </view>
+      <view class="vip-btn-area">
+        <button class="vip-btn" bindtap="goToVip" wx:if="{{!isVip}}">
+          <text>开通Pro</text>
+        </button>
+        <text class="vip-expire" wx:else>有效期至：永久</text>
+      </view>
+    </view>
+
+    <!-- 统计数据 -->
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-num">{{totalCount}}</text>
+        <text class="stat-label">累计使用</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">{{todayCount}}</text>
+        <text class="stat-label">今日使用</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">{{isVip ? '∞' : 10 - todayCount}}</text>
+        <text class="stat-label">剩余次数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会员卡片 -->
+  <view class="vip-card" wx:if="{{!isVip}}" bindtap="goToVip">
+    <view class="vip-content">
+      <view class="vip-header">
+        <text class="vip-title">✨ AI文书宝 Pro</text>
+        <view class="vip-tag">
+          <text>限时特惠</text>
+        </view>
+      </view>
+      <text class="vip-desc">解锁无限次使用，体验全部高级功能</text>
+      <view class="vip-price">
+        <text class="price-current">¥29</text>
+        <text class="price-original">¥99/月</text>
+      </view>
+    </view>
+    <view class="vip-arrow">
+      <text>›</text>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="menu-section">
+    <view class="menu-title">
+      <text>功能与服务</text>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="showHelp">
+        <text class="menu-icon">❓</text>
+        <text class="menu-text">使用帮助</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="feedback">
+        <text class="menu-icon">💬</text>
+        <text class="menu-text">意见反馈</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="checkUpdate">
+        <text class="menu-icon">🔄</text>
+        <text class="menu-text">检查更新</text>
+        <text class="menu-version">{{showVersion}}</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="rateApp">
+        <text class="menu-icon">⭐</text>
+        <text class="menu-text">给我们评分</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置列表 -->
+  <view class="menu-section">
+    <view class="menu-title">
+      <text>设置</text>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item">
+        <text class="menu-icon">🔔</text>
+        <text class="menu-text">消息通知</text>
+        <switch checked="{{notificationEnabled}}" bindchange="toggleSetting" data-key="notificationEnabled" color="#FF6B6B"/>
+      </view>
+      <view class="menu-item">
+        <text class="menu-icon">🔊</text>
+        <text class="menu-text">声音提示</text>
+        <switch checked="{{soundEnabled}}" bindchange="toggleSetting" data-key="soundEnabled" color="#FF6B6B"/>
+      </view>
+      <view class="menu-item">
+        <text class="menu-icon">💾</text>
+        <text class="menu-text">自动保存</text>
+        <switch checked="{{autoSave}}" bindchange="toggleSetting" data-key="autoSave" color="#FF6B6B"/>
+      </view>
+      <view class="menu-item" bindtap="clearCache">
+        <text class="menu-icon">🗑️</text>
+        <text class="menu-text">清理缓存</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="clearHistory">
+        <text class="menu-icon">📜</text>
+        <text class="menu-text danger">清空历史记录</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="menu-section">
+    <view class="menu-title">
+      <text>关于</text>
+    </view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="about">
+        <text class="menu-icon">ℹ️</text>
+        <text class="menu-text">关于我们</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item">
+        <text class="menu-icon">📜</text>
+        <text class="menu-text">用户协议</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item">
+        <text class="menu-icon">🔒</text>
+        <text class="menu-text">隐私政策</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分享 -->
+  <view class="share-section">
+    <button class="share-btn" open-type="share">
+      <text class="share-icon">📤</text>
+      <text class="share-text">分享给好友</text>
+    </button>
+  </view>
+
+  <!-- 底部 -->
+  <view class="footer">
+    <text class="footer-text">AI文书宝 {{showVersion}}</text>
+    <text class="footer-desc">让创作更简单</text>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
