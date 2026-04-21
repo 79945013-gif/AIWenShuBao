@@ -1,15 +1,15 @@
 // 云函数：generateCopywriting - AI文案生成
 // 集成豆包API，支持小红书爆款文案生成
-
 const cloud = require('wx-server-sdk');
 
+// 云函数初始化
 cloud.init({ 
   env: cloud.DYNAMIC_CURRENT_ENV 
 });
 
-// 豆包API配置
+// 豆包API配置 - 火山引擎
 const DOUBAO_CONFIG = {
-  apiKey: 'c88cf079-9f2d-43cb-94b4-eb8d415bd8e3',
+  apiKey: '4Uu259odAbTbV+oBuC3STcR0X9xvzgQHcYf7tqFQLLc=',
   model: 'doubao-1.5-pro-32k-250115',
   apiUrl: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
 };
@@ -19,49 +19,59 @@ const SENSITIVE_WORDS = [
   '最', '第一', '国家级', '顶级', '极品', '极佳', '绝佳',
   '绝对', '终极', '至佳', '完美', '永久', '终身',
   '100%', '百分之百', '保证', '承诺', '保障', '无效退款',
-  '特效', '神药', '万能', '包治', '根治', '立竿见影'
+  '特效', '神药', '万能', '包治', '根治', '立竿见影',
+  '全网第一', '全网最佳', '全球第一', '销量冠军'
 ];
 
 /**
+ * 调用豆包API生成文案
+ */
+async function callDoubaoAPI(prompt) {
+  const response = await wx.request({
+    url: DOUBAO_CONFIG.apiUrl,
+    method: 'POST',
+    header: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${DOUBAO_CONFIG.apiKey}`
+    },
+    data: {
+      model: DOUBAO_CONFIG.model,
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.85,
+      max_tokens: 2500
+    }
+  });
+
+  if (response.statusCode === 200 && response.data.choices) {
+    return response.data.choices[0].message.content;
+  }
+  
+  throw new Error(`API调用失败: ${response.statusCode}`);
+}
+
+/**
  * 生成小红书爆款文案
- * @param {string} topic - 主题
- * @param {string} style - 风格
- * @returns {Object} 生成结果
  */
 async function generateCopywriting(topic, style) {
   const prompt = buildPrompt(topic, style);
   
   try {
-    const response = await wx.cloud.callContainer({
-      config: { env: 'xxxx' },
-      containerUri: DOUBAO_CONFIG.apiUrl,
-      header: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DOUBAO_CONFIG.apiKey}`
-      },
-      method: 'POST',
-      data: {
-        model: DOUBAO_CONFIG.model,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.8,
-        max_tokens: 2000
-      }
-    });
-
-    if (response.choices && response.choices[0]) {
-      const content = response.choices[0].message.content;
-      return parseContent(content);
-    }
+    // 调用豆包API
+    const content = await callDoubaoAPI(prompt);
+    const result = parseContent(content);
     
-    throw new Error('API响应异常');
+    // 添加敏感词检测
+    result.sensitiveCheck = checkSensitiveWords(result.content);
+    
+    return result;
   } catch (err) {
     console.error('豆包API调用失败:', err);
-    // 返回模拟数据
+    // 返回高质量的模拟数据作为备选
     return getMockData(topic, style);
   }
 }
@@ -108,24 +118,24 @@ ${topic}
 ${config.desc}，例如：${config.examples}
 
 ## 输出要求
-请严格按照以下JSON格式返回（不要有任何额外内容）：
+请严格按照以下JSON格式返回（不要有任何额外内容，只返回JSON）：
 {
   "titles": [
-    "标题1（带emoji，不超过25字，悬念感强）",
+    "标题1（带emoji，不超过25字，悬念感强，能吸引点击）",
     "标题2（带emoji，不超过25字）",
     "标题3（带emoji，不超过25字）"
   ],
-  "content": "正文内容（600-900字，要有emoji，有代入感，像真实博主写的，包含开头钩子、正文、结尾引导）",
+  "content": "正文内容（600-900字，要有emoji，有代入感，像真实博主写的，包含开头钩子、正文分段、结尾引导互动）",
   "tags": ["#话题1", "#话题2", "#话题3", "#话题4", "#话题5", "#话题6"],
   "cover_text": "封面文字（5-10字，吸引眼球）"
 }
 
 ## 注意事项
-1. 标题要有悬念感，使用数字或疑问句
-2. 正文要生动有趣，有代入感
-3. 多用emoji增加可读性
+1. 标题要有悬念感，使用数字或疑问句，激发好奇心
+2. 正文要生动有趣，有代入感，善用emoji
+3. 正文分段清晰，每段不要太长
 4. 话题标签要精准且有热度
-5. 避免使用绝对化词汇`;
+5. 避免使用绝对化词汇（最、第一、顶级等）`;
 }
 
 /**
@@ -134,20 +144,36 @@ ${config.desc}，例如：${config.examples}
 function parseContent(content) {
   try {
     // 尝试提取JSON
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    let jsonStr = content;
+    
+    // 移除markdown代码块
+    if (content.includes('```json')) {
+      jsonStr = content.match(/```json\n?([\s\S]*?)```/)?.[1] || content;
+    } else if (content.includes('```')) {
+      jsonStr = content.match(/```\n?([\s\S]*?)```/)?.[1] || content;
+    }
+    
+    // 提取JSON对象
+    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const result = JSON.parse(jsonMatch[0]);
+      
       // 验证必要字段
       if (result.titles && result.content && result.tags) {
-        // 检查敏感词
-        result.sensitiveCheck = checkSensitiveWords(result.content);
-        return result;
+        return {
+          titles: Array.isArray(result.titles) ? result.titles.slice(0, 3) : [result.titles],
+          content: result.content,
+          tags: Array.isArray(result.tags) ? result.tags.slice(0, 6) : result.tags,
+          cover_text: result.cover_text || '今日分享',
+          isMock: false
+        };
       }
     }
+    
     throw new Error('JSON格式不正确');
   } catch (e) {
     console.error('解析失败:', e);
-    return getMockData('', '日常分享');
+    return getMockData(topic, '日常分享');
   }
 }
 
@@ -164,7 +190,7 @@ function checkSensitiveWords(text) {
 }
 
 /**
- * 获取模拟数据
+ * 获取模拟数据（备选方案）
  */
 function getMockData(topic, style) {
   const mockTitles = [
@@ -202,7 +228,8 @@ function getMockData(topic, style) {
     content: mockContent,
     tags: mockTags,
     cover_text: topic || '今日分享',
-    isMock: true
+    isMock: true,
+    sensitiveCheck: { passed: true, words: [], risk: 'low' }
   };
 }
 
@@ -226,7 +253,7 @@ exports.main = async (event, context) => {
   } catch (err) {
     return {
       success: false,
-      error: err.message
+      error: err.message || '生成失败，请稍后重试'
     };
   }
 };

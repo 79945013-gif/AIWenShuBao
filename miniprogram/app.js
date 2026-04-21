@@ -6,9 +6,9 @@ const app = getApp();
 App({
   globalData: {
     userInfo: null,
-    // 豆包API配置
+    // 豆包API配置 - 火山引擎
     doubao: {
-      apiKey: 'c88cf079-9f2d-43cb-94b4-eb8d415bd8e3',
+      apiKey: '4Uu259odAbTbV+oBuC3STcR0X9xvzgQHcYf7tqFQLLc=',
       model: 'doubao-1.5-pro-32k-250115',
       apiUrl: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
     },
