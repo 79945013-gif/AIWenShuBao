@@ -7,9 +7,12 @@ App({
   globalData: {
     userInfo: null,
     // 豆包API配置 - 火山引擎
+    // ⚠️ 请到火山引擎控制台获取正确格式的API Key
+    // 格式：ek-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    // 获取地址：https://console.volcengine.com/ark/
     doubao: {
-      apiKey: '4Uu259odAbTbV+oBuC3STcR0X9xvzgQHcYf7tqFQLLc=',
-      model: 'doubao-1.5-pro-32k-250115',
+      apiKey: '',
+      model: 'YOUR_ENDPOINT_ID',
       apiUrl: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
     },
     // 每日免费次数
