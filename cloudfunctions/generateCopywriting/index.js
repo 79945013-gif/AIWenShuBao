@@ -8,11 +8,9 @@ cloud.init({
 });
 
 // 豆包API配置 - 火山引擎
-// 注意：请在火山引擎控制台获取正确格式的API Key
-// 正确格式：ek-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 const DOUBAO_CONFIG = {
-  apiKey: 'YOUR_API_KEY',  // 替换为正确格式的API Key
-  model: 'YOUR_ENDPOINT_ID',  // 替换为你的接入点ID
+  apiKey: '6d23d85a-6fe4-4497-b74e-f152996b18ad',
+  model: 'doubao-1.5-pro-32k-250115',
   apiUrl: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
 };
 
