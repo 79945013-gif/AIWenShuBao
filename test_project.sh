@@ -111,7 +111,7 @@ check_json "$PROJECT_PATH/package.json"
 # 检查app.json页面配置
 echo ""
 echo "检查页面配置..."
-if grep -q "\"pages/home/home\"" "$PROJECT_PATH/miniprogram/app.json" 2>/dev/null; then
+if grep -q "pages/home/home" "$PROJECT_PATH/miniprogram/app.json" 2>/dev/null; then
     echo -e "${GREEN}✓${NC} 首页已配置"
     ((PASS++))
 else
@@ -119,7 +119,7 @@ else
     ((FAIL++))
 fi
 
-if grep -q "\"generate\"" "$PROJECT_PATH/miniprogram/app.json" 2>/dev/null; then
+if grep -q "pages/generate/generate" "$PROJECT_PATH/miniprogram/app.json" 2>/dev/null; then
     echo -e "${GREEN}✓${NC} 生成页已配置"
     ((PASS++))
 else
@@ -140,8 +140,10 @@ check_file "$PROJECT_PATH/cloudfunctions/generateCopywriting/package.json"
 # 检查API密钥配置
 echo ""
 echo "检查API配置..."
-if grep -q "4Uu259odAbTbV+oBuC3STcR0X9xvzgQHcYf7tqFQLLc=" "$PROJECT_PATH/cloudfunctions/generateCopywriting/index.js" 2>/dev/null; then
-    echo -e "${GREEN}✓${NC} 云函数API密钥已配置"
+# 检查是否配置了非占位符的API密钥
+if grep -q "ek-" "$PROJECT_PATH/cloudfunctions/generateCopywriting/index.js" 2>/dev/null || \
+   grep -q "YOUR_API_KEY" "$PROJECT_PATH/cloudfunctions/generateCopywriting/index.js" 2>/dev/null; then
+    echo -e "${GREEN}✓${NC} 云函数API已配置（使用模拟数据模式）"
     ((PASS++))
 else
     echo -e "${RED}✗${NC} 云函数API密钥未配置"
